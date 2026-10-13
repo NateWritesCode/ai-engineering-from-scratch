@@ -28,6 +28,24 @@ Code panel in VS Code.
 | 5. Explain it back | `/teach-back` | Explain it in my own words, get the gaps corrected, save notes and review cards. |
 | 6. Save | commit + push | `/teach-back` offers the commit. Push with VS Code's Sync button. |
 
+## Commands
+
+Type these in the Claude Code panel (in VS Code on aibox).
+
+| Command | Use it when | What happens |
+|---|---|---|
+| `/recall` | Start of every session | Up to 8 due review cards. Right → the card comes back later; wrong → tomorrow. |
+| `/learn` | Learning the next lesson | The course tutor teaches it step by step, quizzes me and logs it in `LEARNING.md`. |
+| `/try-it` | After `/learn`, or `/try-it exercise 2` | A TODO starter file in `my-work/` that I complete. Claude runs and checks it. |
+| `/hint` | Stuck on code, an error or an idea | One hint per reply: question → idea → approach → fix. `/hint more` for the next one. |
+| `/teach-back` | Finishing a lesson | I explain it back. Writes my phase notes, adds review cards, offers a commit. |
+| `/check-understanding <N>` | End of phase N | 8-question phase quiz. Below 70% → revisit before moving on. |
+| `/course-guide <topic>` | "Where is X taught?" or "I'm stuck on X" | Points at the exact lessons and the next command. |
+| `/start-learning` | Once at the start, or to re-plan | Placement quiz and a personal plan in `LEARNING.md`. |
+| `/build-project` | Capstone projects (phase 19) | Stage-by-stage project tutor: hints, never solutions. |
+
+On the laptop: `course` opens the course in VS Code (with this page), and `course -t` opens a terminal on aibox.
+
 **Each week:** at least one session that's only `/recall` and the lesson **Exercises** I skipped.
 Re-read [[questions]] and clear what I can.
 
