@@ -292,7 +292,12 @@
       "explanation": "VRAM (Video RAM) is the dedicated memory on a GPU. It limits the size of models and batch sizes you can use during training, separate from your system's main RAM.",
       "box": 1,
       "due": "2026-10-14",
-      "history": []
+      "history": [
+        {
+          "date": "2026-10-13",
+          "right": false
+        }
+      ]
     },
     {
       "id": "00.03-q3",
@@ -396,6 +401,141 @@
       "kind": "explain",
       "question": "On aibox, nvidia-smi says memory 'Not Supported' and PyTorch says 130.6 GB. How much can a model actually use, and why?",
       "answer": "aibox has unified memory: CPU and GPU share one pool, so there's no separate VRAM for nvidia-smi to report. 130.6 GB (= 121.6 GiB) is the total, but the OS and other processes (e.g. llama-server ~19.7 GB) share it. Use FREE memory (torch.cuda.mem_get_info(), ~40 GB that day) → ~20B params in fp16.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.04-q1",
+      "lesson": "00-setup-and-tooling/04-apis-and-keys",
+      "kind": "quiz",
+      "question": "What is an API key used for when calling an LLM service?",
+      "options": [
+        "Encrypting the data sent to the server",
+        "Authenticating your identity and authorizing requests",
+        "Compressing requests to reduce bandwidth",
+        "Selecting which programming language the server uses"
+      ],
+      "correct": 1,
+      "explanation": "An API key is a unique string that identifies your account, authorizes your requests, and allows the provider to track usage and billing.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.04-q2",
+      "lesson": "00-setup-and-tooling/04-apis-and-keys",
+      "kind": "quiz",
+      "question": "Why should API keys never be hardcoded directly in source code?",
+      "options": [
+        "Python cannot read string literals longer than 50 characters",
+        "API providers block keys that appear in source files",
+        "Hardcoded keys make the code run slower",
+        "They can be accidentally committed to git and exposed publicly"
+      ],
+      "correct": 3,
+      "explanation": "Hardcoded keys in source code risk being committed to version control and pushed to public repositories, where they can be scraped and abused by others.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.04-q3",
+      "lesson": "00-setup-and-tooling/04-apis-and-keys",
+      "kind": "quiz",
+      "question": "What is the recommended way to store API keys for local development?",
+      "options": [
+        "In a .env file that is listed in .gitignore",
+        "In the README.md for easy access",
+        "In a Python variable at the top of your script",
+        "In the requirements.txt alongside package versions"
+      ],
+      "correct": 0,
+      "explanation": "A .env file stores keys as environment variables and should be added to .gitignore so it is never committed to version control. SDKs read keys from environment variables automatically.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.04-q4",
+      "lesson": "00-setup-and-tooling/04-apis-and-keys",
+      "kind": "quiz",
+      "question": "In the raw HTTP API call to Anthropic, which header carries the API key?",
+      "options": [
+        "Authorization: Bearer sk-ant-...",
+        "Content-Type: application/json",
+        "anthropic-version: 2023-06-01",
+        "x-api-key: sk-ant-..."
+      ],
+      "correct": 3,
+      "explanation": "Anthropic's API uses the 'x-api-key' header for authentication, not the more common 'Authorization: Bearer' pattern. This is specific to their API design.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.04-q5",
+      "lesson": "00-setup-and-tooling/04-apis-and-keys",
+      "kind": "quiz",
+      "question": "What happens when you exceed an API's rate limit?",
+      "options": [
+        "Your request is queued and processed later automatically",
+        "The server returns an error (typically HTTP 429) and you must wait before retrying",
+        "Your API key is permanently revoked",
+        "The API silently drops your request with no response"
+      ],
+      "correct": 1,
+      "explanation": "Rate limiting returns HTTP 429 (Too Many Requests). You need to wait and retry, typically with exponential backoff. Rate limits prevent abuse and ensure fair usage.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.04-tb1",
+      "lesson": "00-setup-and-tooling/04-apis-and-keys",
+      "kind": "explain",
+      "question": "Why does keeping an API key secret matter so much, and what do you do if one leaks?",
+      "answer": "The key identifies and authorizes your account and ties usage to it: anyone who has it can make calls billed to you (password + credit card). Public GitHub is scraped for keys within minutes, and deleting it later doesn't remove it from git history. Fix: revoke the key and create a new one.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.04-tb2",
+      "lesson": "00-setup-and-tooling/04-apis-and-keys",
+      "kind": "explain",
+      "question": "Does the API key encrypt your request? What does it actually do?",
+      "answer": "No. The key only identifies and authorizes you (who you are, whether you're allowed, whom to bill). Keeping the traffic private is the job of HTTPS (the https:// in the URL).",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.04-tb3",
+      "lesson": "00-setup-and-tooling/04-apis-and-keys",
+      "kind": "explain",
+      "question": "Does the server send back a Python dict? Walk through what goes over the wire in each direction.",
+      "answer": "No: JSON text goes both ways. Our code turns its dict into JSON with json.dumps(...).encode() before sending, and turns the JSON text it gets back into a dict with json.loads(...). Then result[\"content\"][0][\"text\"] gets the answer. The SDK does both conversions and gives a Message object instead.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.04-tb4",
+      "lesson": "00-setup-and-tooling/04-apis-and-keys",
+      "kind": "explain",
+      "question": "Your agent gets a 429 and a 401. Whose fault is each, what does it mean, and does retrying help?",
+      "answer": "Both are 4xx (client side). 429 = rate limited (too many requests too fast): wait and retry with exponential backoff, it will likely work. 401 = bad or missing API key: retrying never helps, fix the key (is ANTHROPIC_API_KEY set? revoked?). A wrong address is 404 or no response, not 401.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.04-tb5",
+      "lesson": "00-setup-and-tooling/04-apis-and-keys",
+      "kind": "explain",
+      "question": "A bad API key: 4xx or 5xx? What's the general rule?",
+      "answer": "4xx (401). 4xx = the client's fault (bad request, bad key, too many requests): fix what you send. 5xx = the server's fault (crash, overloaded): the same request may work later, so wait and retry.",
       "box": 1,
       "due": "2026-10-14",
       "history": []

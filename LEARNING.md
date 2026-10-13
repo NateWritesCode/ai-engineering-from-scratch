@@ -43,6 +43,7 @@ Build goal: "everything", working through the whole curriculum end to end.
 | 2026-10-13 | 00-setup-and-tooling/01-dev-environment | 3/3 | Predicted the GPU would show up from system python3; missed that the GPU check goes through PyTorch. Learned: use `uv run python`, and `python3` may be the venv if it's activated (PATH). |
 | 2026-10-13 | 00-setup-and-tooling/02-git-and-collaboration | 3/3 | Missed: push alone doesn't save staged work (needs commit first); thought staged = in history; expected a merge commit on a fast-forward; thought untracked files don't show in `git status`. |
 | 2026-10-13 | 00-setup-and-tooling/03-gpu-setup-and-cloud | 2/3 | Missed the fp16 sum (multiplied by 2 instead of dividing: GB ÷ 2 bytes = params) and the GB→param unit. Also: guessed CPU 10 s (was 0.3 s), thought no-synchronize timing would be bigger, missed that the 5000×5000 result cells are all independent (25M). Learned: aibox has unified memory (nvidia-smi says Not Supported), use FREE not total, warm up before timing. |
+| 2026-10-13 | 00-setup-and-tooling/04-apis-and-keys | 3/3 | Used aibox's local Gemma server (port 8095, Anthropic-compatible) for raw HTTP + SDK calls; fake key → real 401 from Anthropic. Missed: predicted 5xx for a bad key (4xx = client's fault, 5xx = server's). Warm-up miss: VRAM = Video RAM (said virtual). |
 
 ## Review queue
 - 00-setup-and-tooling/03-gpu-setup-and-cloud: fp16 rule of thumb (memory ÷ 2 bytes per parameter = number of parameters; answer must be smaller than the GB figure).

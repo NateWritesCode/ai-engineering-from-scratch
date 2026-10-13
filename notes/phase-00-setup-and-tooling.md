@@ -133,3 +133,52 @@ feature version (GB10 = 12.1, Blackwell).
 
 **Connects to:** 00.01 (CUDA 13 driver ↔ `+cu130` PyTorch). Phase 1 (matrices, dot products). Phase 3
 (training memory: gradients, optimizer state). Phase 11 (quantization: fewer bytes per parameter).
+
+## 00.04 · APIs & Keys
+*2026-10-13 · quiz 3/3*
+
+**In my words:** An API is a formal, agreed way for my code to talk to a server. For AI models that's
+an HTTP request to an endpoint, with my API key in a header and a JSON body saying what I want; a JSON
+response comes back. The key identifies and authorizes me and ties usage (billing) to my account, so
+it's a password and a credit card in one: anyone who has it can spend my money. Keys never go in
+code; they live in environment variables or a `.env` file that git ignores.
+
+**How it works:**
+- Four parts of every call: **endpoint** (URL), **API key** (header), **request body** (JSON),
+  **response body** (JSON).
+- Raw HTTP: build the URL (`/v1/messages`) → headers (`Content-Type: application/json`,
+  **`x-api-key`**, `anthropic-version`) → body dict (`model`, `max_tokens`, `messages`) →
+  `json.dumps(...).encode()` → POST → status 200 + JSON text → `json.loads(...)` → dict →
+  `result["content"][0]["text"]` (`content` is a list of blocks).
+- The response also has `stop_reason` (`end_turn` = finished, `max_tokens` = cut off) and `usage`
+  (input/output tokens = what you pay for).
+- The SDK (`anthropic.Anthropic()`) does all of that for me: headers, reading `ANTHROPIC_API_KEY` from
+  the environment, the URL, JSON both ways, a typed `Message` object (`response.content[0].text`),
+  named Python errors, and automatic retries.
+- Keys: `export NAME=value` reaches every program started from that shell (until it closes); `.env`
+  files persist (`uv run --env-file .env ...`). This repo's `.gitignore` already ignores `.env`.
+- On aibox: the local Gemma server (`http://127.0.0.1:8095`, model `gemma-26b-chat`) speaks the
+  Anthropic format, so I can practise for free with `base_url=` set to that address.
+
+**Gotchas:**
+- Leaking a key: deleting it later doesn't help (it's in git history, and bots scrape public GitHub
+  within minutes). **Revoke** it and make a new one.
+- The key authorizes, it doesn't encrypt. Privacy on the wire comes from `https://`.
+- The server sends JSON *text*, not a Python dict; my code turns it into a dict with `json.loads`.
+- Checking the key is the server's job: the local server ignores it, Anthropic's checks every call.
+- Status codes: **4xx = my fault** (fix the request), **5xx = the server's fault** (wait and retry).
+  400 bad request; **401 bad/missing key** (retrying never helps: fix the key); 404 wrong path;
+  **429 rate limit** (the 4xx where waiting + retrying *does* help, with exponential backoff);
+  500/529 server error/overloaded.
+
+**Key terms:** API — an agreed interface for programs to talk to each other; HTTP — the request/response
+protocol of the web; endpoint — the URL you send requests to; API key — a secret string that
+identifies and authorizes your account; JSON — text format for data (maps to a Python dict);
+environment variable — a named value a shell passes to programs; `.env` — a file of `NAME=value`
+secrets, never committed; SDK — the provider's library that wraps the raw HTTP; token — a chunk of text
+(~¾ word), the billing unit; status code — a number saying how a request went; rate limit — max
+requests per time window (429); exponential backoff — wait 1 s, 2 s, 4 s... between retries;
+revoke — cancel a key so it stops working.
+
+**Connects to:** 00.02 (git history keeps secrets forever; `.gitignore` for `.env`). Phase 11 (calling
+LLM APIs for real), Phases 13–16 (agents calling APIs in loops; tool-call blocks in `content`).
