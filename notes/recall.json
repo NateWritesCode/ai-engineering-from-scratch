@@ -124,6 +124,141 @@
       "box": 1,
       "due": "2026-10-14",
       "history": []
+    },
+    {
+      "id": "00.02-q1",
+      "lesson": "00-setup-and-tooling/02-git-and-collaboration",
+      "kind": "quiz",
+      "question": "What does 'version control' primarily help you do?",
+      "options": [
+        "Automatically fix bugs in your code",
+        "Speed up code execution",
+        "Track changes to files over time and collaborate with others",
+        "Compress files to save disk space"
+      ],
+      "correct": 2,
+      "explanation": "Version control systems like git track every change made to files, allowing you to revert to previous states and collaborate with others on the same codebase.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.02-q2",
+      "lesson": "00-setup-and-tooling/02-git-and-collaboration",
+      "kind": "quiz",
+      "question": "What is a 'repository' in the context of software development?",
+      "options": [
+        "A package manager for installing libraries",
+        "A collection of files and their complete change history managed by version control",
+        "A database for storing user data",
+        "A cloud storage service like Google Drive"
+      ],
+      "correct": 1,
+      "explanation": "A repository (repo) is a directory tracked by git that contains all project files along with the full history of changes made to those files.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.02-q3",
+      "lesson": "00-setup-and-tooling/02-git-and-collaboration",
+      "kind": "quiz",
+      "question": "What is the correct sequence for saving and backing up your work in git?",
+      "options": [
+        "git push, git add, git commit",
+        "git clone, git add, git push",
+        "git add, git commit, git push",
+        "git commit, git add, git push"
+      ],
+      "correct": 2,
+      "explanation": "First you stage changes with 'git add', then save a snapshot with 'git commit', then upload to the remote with 'git push'. This is the daily workflow.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.02-q4",
+      "lesson": "00-setup-and-tooling/02-git-and-collaboration",
+      "kind": "quiz",
+      "question": "What does 'git checkout -b experiment/new-optimizer' do?",
+      "options": [
+        "Creates a new branch named experiment/new-optimizer and switches to it",
+        "Deletes the branch experiment/new-optimizer",
+        "Downloads a branch from GitHub called experiment/new-optimizer",
+        "Reverts all files to match the experiment/new-optimizer branch"
+      ],
+      "correct": 0,
+      "explanation": "The '-b' flag creates a new branch with the given name and immediately switches to it, allowing you to experiment without affecting the main branch.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.02-q5",
+      "lesson": "00-setup-and-tooling/02-git-and-collaboration",
+      "kind": "quiz",
+      "question": "Why should you add '.pt', '.pth', and '.safetensors' to your .gitignore?",
+      "options": [
+        "They are model checkpoint files that are too large for git and can be re-generated",
+        "Git cannot track binary files of any kind",
+        "They are Python test files that should not be committed",
+        "They contain sensitive API keys"
+      ],
+      "correct": 0,
+      "explanation": "Model checkpoint files (.pt, .pth, .safetensors) are often gigabytes in size. Git is not designed for large binary files, so these should be excluded and re-generated or stored separately.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.02-tb1",
+      "lesson": "00-setup-and-tooling/02-git-and-collaboration",
+      "kind": "explain",
+      "question": "Where does git keep your history, and at what point is your work actually backed up off the machine?",
+      "answer": "Git is local: commits, branches and history live in the .git folder on aibox. Only `git push` to a remote (GitHub, `origin`) puts a copy elsewhere. Commit protects against your own mistakes; push protects against the machine dying.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.02-tb2",
+      "lesson": "00-setup-and-tooling/02-git-and-collaboration",
+      "kind": "explain",
+      "question": "Why does version control matter for AI work in particular?",
+      "answer": "Commits are snapshots you can return to, and branches let you run an experiment (new optimizer, different learning rate) without touching main: keep it by merging, or just switch back. The AI-specific catch: model checkpoints are huge, so keep them out with .gitignore.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.02-tb3",
+      "lesson": "00-setup-and-tooling/02-git-and-collaboration",
+      "kind": "explain",
+      "question": "You edit a file and run `git add` on it, then `git push`. Is the edit on GitHub? What's missing?",
+      "answer": "No. Staged is not history yet, and push only sends commits (it would say 'Everything up-to-date'). You need `git commit -m \"...\"` first, then `git push`.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.02-tb4",
+      "lesson": "00-setup-and-tooling/02-git-and-collaboration",
+      "kind": "explain",
+      "question": "You branch off main, commit on the branch, then merge it back into main without main having changed. Does the merge create a new commit? When would it?",
+      "answer": "No: it's a fast-forward, git just slides the main label forward to the branch's commit. A real merge commit (two parents) only appears when both branches got new commits after they split, e.g. merging upstream/main into your fork.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
+    },
+    {
+      "id": "00.02-tb5",
+      "lesson": "00-setup-and-tooling/02-git-and-collaboration",
+      "kind": "explain",
+      "question": "You create model.pt in a repo with no .gitignore. What does `git status --short` show, and why does that matter?",
+      "answer": "`?? model.pt`: untracked files still show up, because status shows everything that differs from the last commit. So `git add .` would stage it and a multi-GB file would enter history. Add `*.pt` etc. to .gitignore so git doesn't see it.",
+      "box": 1,
+      "due": "2026-10-14",
+      "history": []
     }
   ]
 }

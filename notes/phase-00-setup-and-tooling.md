@@ -45,3 +45,45 @@ library — modules that ship with Python (like `sys`).
 
 **Connects to:** everything after it. Next up: 00.02 Git & Collaboration. 00.06 Python Environments
 goes deeper on venvs, and 00.03 GPU Setup on the driver/CUDA layer.
+
+## 00.02 · Git & Collaboration
+*2026-10-13 · quiz 3/3*
+
+**In my words:** Git tracks the changes made to a project as a history of snapshots (commits) that I
+can go back to, so I can experiment without fear: try something on a branch, keep it if it works,
+switch back if it doesn't. Git itself runs locally on aibox; pushing to a remote (GitHub) is what gives
+me a backup and lets other people pull my code. For AI, that means every experiment is tracked, and
+huge model checkpoints are kept out with `.gitignore`.
+
+**How it works:**
+- I edit a file in the **working directory** → `git add` puts it in the **staging area** (the next
+  snapshot) → `git commit -m "message"` locks it into the **local repo** → `git push` sends the
+  commits to the **remote** (GitHub).
+- Commit protects me from my own mistakes; push protects me from the machine dying.
+- `git status --short` shows only what differs from the last commit: `??` untracked, `A` added,
+  `M` modified. Left column = staged, right column = working files (` M` changed, `M ` staged).
+- A **branch** is a label pointing at a commit. `git checkout -b <name>` makes one and switches to it.
+  Checking out a branch rewrites my files to match its commit; `HEAD` = where I am now.
+- `git merge <branch>`: if `main` hadn't moved, it's a **fast-forward** (the label just slides forward,
+  no new commit). Only when both branches have new commits does git create a merge commit.
+- My remotes: `origin` = my fork (push here), `upstream` = the course (fetch updates from here).
+
+**Gotchas:**
+- Staged ≠ committed. `git add` doesn't write history, and `git push` only sends commits, so I need to
+  commit before pushing.
+- Untracked files still show up in `git status` (as `??`). That's why `git add .` can sweep up a huge
+  file by accident.
+- Deleting a big file in a later commit doesn't shrink the repo: the old snapshot still holds it.
+  Getting it out means rewriting history (and GitHub rejects files over 100 MB anyway). Prevent it
+  with `.gitignore` (this repo already ignores `*.pt`, `*.pth`, `*.safetensors`).
+- A fast-forward merge makes no new commit.
+
+**Key terms:** repository — a folder git tracks plus its full history (in `.git`); commit — a
+snapshot of the whole project with a message and an ID; staging area — where I choose what goes in
+the next commit; branch — a movable label on a commit; HEAD — the commit/branch I'm on now; merge —
+bring one branch's changes into another; fast-forward — a merge that just moves the label; remote — a
+copy of the repo somewhere else (GitHub); `.gitignore` — name patterns git ignores.
+
+**Connects to:** 00.01 (the `.gitignore` habit pairs with keeping the environment clean). Every later
+lesson: commit `my-work/` after each one. Merging course updates uses `git fetch upstream && git merge
+upstream/main`, which makes a real merge commit.

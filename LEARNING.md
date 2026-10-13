@@ -41,5 +41,6 @@ Build goal: "everything", working through the whole curriculum end to end.
 | Date | Lesson | Quiz | Note |
 |------|--------|------|------|
 | 2026-10-13 | 00-setup-and-tooling/01-dev-environment | 3/3 | Predicted the GPU would show up from system python3; missed that the GPU check goes through PyTorch. Learned: use `uv run python`, and `python3` may be the venv if it's activated (PATH). |
+| 2026-10-13 | 00-setup-and-tooling/02-git-and-collaboration | 3/3 | Missed: push alone doesn't save staged work (needs commit first); thought staged = in history; expected a merge commit on a fast-forward; thought untracked files don't show in `git status`. |
 
 ## Review queue
