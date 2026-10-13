@@ -126,3 +126,6 @@ site/manuals.html
 .project-validation/
 projects/*/solution/output/
 projects/*/solution/demo-output/
+
+# Personal Claude Code settings
+.claude/settings.local.json
