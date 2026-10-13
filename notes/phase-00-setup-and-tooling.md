@@ -87,3 +87,49 @@ copy of the repo somewhere else (GitHub); `.gitignore` — name patterns git ign
 **Connects to:** 00.01 (the `.gitignore` habit pairs with keeping the environment clean). Every later
 lesson: commit `my-work/` after each one. Merging course updates uses `git fetch upstream && git merge
 upstream/main`, which makes a real merge commit.
+
+## 00.03 · GPU Setup & Cloud
+*2026-10-13 · quiz 2/3 (fp16 rule in the Review queue)*
+
+**In my words:** A GPU has thousands of simple cores that do the same kind of maths in parallel, while
+a CPU has a few (~20 on aibox) powerful ones. AI is mostly matrix multiplication, and every cell of the
+result is its own dot product that doesn't depend on any other cell, so the work splits perfectly
+across a GPU's cores. That's why training goes from hours to minutes.
+
+**How it works:**
+- Matrix multiply: each result cell = (row of A) · (column of B). 5000×5000 → 25 million independent
+  dot products of 5000 pairs each ("embarrassingly parallel").
+- Benchmark: make two random 5000×5000 matrices → time CPU `a @ b` → copy to GPU with `.to("cuda")`
+  *before* the clock → **warm up** → time several runs and **average** → `torch.cuda.synchronize()`
+  → speedup = CPU time ÷ GPU time.
+- On aibox (fp32): CPU 0.31 s, GPU 0.015 s → **~20×**. The first, unfair run said 2×.
+- Pick the device in real code: `device = torch.device("cuda" if torch.cuda.is_available() else "cpu")`.
+- fp16 rule of thumb: $\text{max parameters} \approx \dfrac{\text{memory (bytes)}}{2 \text{ bytes/param}}$,
+  or check a model: $\text{params} \times 2 \text{ bytes} = \text{memory needed}$.
+
+**Gotchas:**
+- fp16 sum: **divide** memory by 2 (24 GB → 12B, 16 GB → 8B). More bytes per param = fewer params,
+  so the answer is always smaller than the GB number. The unit becomes parameters, not GB.
+- The rule is a ceiling, not a fit: a model that needs *all* the memory won't really run (no room for
+  working memory). Training needs several times more than loading.
+- First run of anything is a bad benchmark: the first GPU multiply includes one-time setup (loading
+  cuBLAS). Warm up first.
+- GPU calls are **asynchronous**: Python queues the job and moves on. Without `synchronize()` you time
+  the queueing (0.0005 s), not the work (0.015 s).
+- A GPU has *thousands* of cores, not millions (25 million was the number of result cells).
+- The CPU is fast too (0.3 s, not 10 s): PyTorch uses an optimised maths library on all cores.
+- aibox has **unified memory**: no separate VRAM, so `nvidia-smi` says "Not Supported" for memory.
+  PyTorch says 130.6 GB total (= 121.6 GiB), but only ~40 GB was **free**. Use free, and check
+  `nvidia-smi` for big processes (`llama-server` ~19.7 GB) before big runs.
+- GB vs GiB: GB = 10⁹ bytes, GiB = 2³⁰ bytes (130.6 GB ≈ 121.6 GiB).
+
+**Key terms:** CPU — the main processor, few powerful cores; GPU — thousands of simple parallel cores;
+CUDA — NVIDIA's platform for running code on the GPU; VRAM — the GPU's own memory, limits model size;
+unified memory — CPU and GPU share one pool (aibox); dot product — multiply pairs and add them up;
+asynchronous — Python doesn't wait for the GPU to finish; warm-up — an untimed first run that absorbs
+setup; fp16 — 16-bit numbers, 2 bytes each; parameter — one learned number in a model; Tensor Core —
+GPU hardware specialised for matrix maths (shines at fp16); compute capability — NVIDIA's chip
+feature version (GB10 = 12.1, Blackwell).
+
+**Connects to:** 00.01 (CUDA 13 driver ↔ `+cu130` PyTorch). Phase 1 (matrices, dot products). Phase 3
+(training memory: gradients, optimizer state). Phase 11 (quantization: fewer bytes per parameter).
